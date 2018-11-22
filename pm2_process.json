@@ -1,15 +1,15 @@
 {
   "apps": [
     {
-      "name": "homeautomation",
+      "name": "gh-oshirase",
       "script": "dist/index.js",
       "node_args": "--max_old_space_size=256",
       "exec_mode": "fork",
-      "pid_file": "/usr/local/var/run/homeautomation.pid",
+      "pid_file": "/usr/local/var/run/gh-oshirase.pid",
       "autorestart": true,
       "merge_logs": true,
-      "out_file": "/usr/local/var/log/homeautomation.stdout.log",
-      "error_file": "/usr/local/var/log/homeautomation.stderr.log",
+      "out_file": "/usr/local/var/log/gh-oshirase.stdout.log",
+      "error_file": "/usr/local/var/log/gh-oshirase.stderr.log",
       "env": {
         "NODE_ENV": "production"
       }

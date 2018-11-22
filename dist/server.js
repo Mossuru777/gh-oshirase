@@ -12,36 +12,36 @@ class Server {
     constructor(config) {
         this.language = "ja";
         this.app = express();
-        this.app.use((_req, res) => {
-            res.send(404);
-        });
         const json_parser = body_parser.json();
         this.app.post("/mythings", json_parser, (req, res) => {
             if (!req.body) {
                 return res.sendStatus(400);
             }
-            const text = req.body.text;
-            if (text && rainfall_prediction_1.isRainFallPrediction(text)) {
-                console.log(req.headers);
-                if (req.headers.hasOwnProperty("X-Secret") && req.headers["X-Secret"] === config.mythings_secret) {
-                    try {
-                        const detail = text.values[0];
-                        const speak = sprintf_js_1.sprintf("%sに%sに1時間あたり%sミリの雨がふる予報です。", detail.area, detail.time, detail.rainfall);
-                        ghn.device(config.google_home_name, this.language);
-                        ghn.notify(speak, (notifyRes) => {
-                            console.info(notifyRes);
-                            res.sendStatus(204);
-                        });
-                    }
-                    catch (err) {
-                        console.error(err);
-                        res.sendStatus(500);
-                    }
+            console.log(req.headers);
+            console.log(req.body);
+            const text = req.body;
+            if (text !== undefined && rainfall_prediction_1.isRainFallPrediction(text) &&
+                req.headers.hasOwnProperty("x-secret") && req.headers["x-secret"] === config.mythings_secret) {
+                try {
+                    const detail = text.values[0];
+                    const speak = sprintf_js_1.sprintf("%sに%sに1時間あたり%sミリの雨がふる予報です。", detail.area, detail.time, detail.rainfall);
+                    ghn.ip(config.google_home_ip, this.language);
+                    ghn.notify(speak, (notifyRes) => {
+                        console.info(notifyRes);
+                        res.sendStatus(204);
+                    });
                 }
-                else {
+                catch (err) {
+                    console.error(err);
+                    res.sendStatus(500);
                 }
+            }
+            else {
                 res.sendStatus(403);
             }
+        });
+        this.app.use((_req, res) => {
+            res.sendStatus(404);
         });
         if (config.socket_path) {
             try {

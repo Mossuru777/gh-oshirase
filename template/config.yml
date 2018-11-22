@@ -1,8 +1,8 @@
 ### Google Home ###
 
-# Google Home device name to speak
-# name: <string>
-google_home_name: "Google Home mini"
+# device ip address to speak
+# ip_address: <string>
+google_home_ip: "192.0.2.1"
 
 ### Mythings ###
 

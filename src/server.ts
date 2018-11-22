@@ -16,39 +16,39 @@ export class Server {
     private readonly tcp_http_server: http.Server | undefined;
 
     constructor(config: Config) {
-        this.app.use((_req: any, res: any) => {
-            res.send(404);
-        });
-
         const json_parser = body_parser.json();
 
         this.app.post("/mythings", json_parser, (req: any, res: any) => {
             if (!req.body) {
                 return res.sendStatus(400);
             }
-            // console.log(req.body);
 
-            const text = req.body.text;
-            if (text && isRainFallPrediction(text)) {
-                console.log(req.headers);
-                if (req.headers.hasOwnProperty("X-Secret") && req.headers["X-Secret"] === config.mythings_secret) {
-                    try {
-                        const detail = (text as RainFallPrediction).values[0];
-                        const speak = sprintf("%sに%sに1時間あたり%sミリの雨がふる予報です。", detail.area, detail.time, detail.rainfall);
+            console.log(req.headers);
+            console.log(req.body);
 
-                        ghn.device(config.google_home_name, this.language);
-                        ghn.notify(speak, (notifyRes: any) => {
-                            console.info(notifyRes);
-                            res.sendStatus(204);
-                        });
-                    } catch (err) {
-                        console.error(err);
-                        res.sendStatus(500);
-                    }
-                } else {
+            const text = req.body;
+            if (text !== undefined && isRainFallPrediction(text) &&
+                req.headers.hasOwnProperty("x-secret") && req.headers["x-secret"] === config.mythings_secret) {
+                try {
+                    const detail = (text as RainFallPrediction).values[0];
+                    const speak = sprintf("%sに%sに1時間あたり%sミリの雨がふる予報です。", detail.area, detail.time, detail.rainfall);
+
+                    ghn.ip(config.google_home_ip, this.language);
+                    ghn.notify(speak, (notifyRes: any) => {
+                        console.info(notifyRes);
+                        res.sendStatus(204);
+                    });
+                } catch (err) {
+                    console.error(err);
+                    res.sendStatus(500);
                 }
+            } else {
                 res.sendStatus(403);
             }
+        });
+
+        this.app.use((_req: any, res: any) => {
+            res.sendStatus(404);
         });
 
         // プロトコルごとにListenできるか試す
