@@ -1,0 +1,28 @@
+### Google Home ###
+
+# Google Home device name to speak
+# name: <string>
+google_home_name: "Google Home mini"
+
+### Mythings ###
+
+# Secret
+# secret: <string>
+mythings_secret: ""
+
+### HTTP Server ###
+
+# UNIX domain socket http listening
+# file path: <string>
+# set `~` or `null` to disable.
+socket_path: /var/run/gh-oshirase.sock
+
+# TCP http listening
+# port: <number>
+# set `~` or `null` to disable.
+tcp_port: ~
+
+# TCP http listening hostname
+# hostname: <string>
+# set `~` or `null` to use "127.0.0.1".
+tcp_hostname: ~
