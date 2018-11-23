@@ -31,7 +31,10 @@ export class Server {
                 req.headers.hasOwnProperty("x-secret") && req.headers["x-secret"] === config.mythings_secret) {
                 try {
                     const detail = (text as RainFallPrediction).values[0];
-                    const speak = sprintf("%sに%sに1時間あたり%sミリの雨がふる予報です。", detail.area, detail.time, detail.rainfall);
+                    const speak = sprintf(
+                        "雨がふる予報が出ています。%sに、%sに、1時間あたり、%sミリの雨がふるでしょう。",
+                        detail.area, detail.time, detail.rainfall
+                    );
 
                     ghn.ip(config.google_home_ip, this.language);
                     ghn.notify(speak, (notifyRes: any) => {
