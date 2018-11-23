@@ -1,14 +1,13 @@
-export interface RainFallPrediction {
-    readonly user_id: string;
-    readonly service_id: string;
-    readonly mythings_id: string;
+import { MyThingsMessage, MyThingsMessageDetail } from "./mythings_message";
+export interface RainFallPrediction extends MyThingsMessage {
     readonly values: [RainFallPredictionDetail];
 }
-export interface RainFallPredictionDetail {
+export declare function isRainFallPrediction(o: any): o is RainFallPrediction;
+export interface RainFallPredictionDetail extends MyThingsMessageDetail {
     readonly area: string;
     readonly datetime: string;
     readonly time: string;
     readonly date: string;
     readonly rainfall: string;
 }
-export declare function isRainFallPrediction(o: any): o is RainFallPrediction;
+export declare function isRainFallPredictionDetail(o: any): o is RainFallPredictionDetail;

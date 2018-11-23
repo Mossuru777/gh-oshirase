@@ -1,11 +1,15 @@
-export interface RainFallPrediction {
-    readonly user_id: string;
-    readonly service_id: string;
-    readonly mythings_id: string;
+import {isMyThingsMessage, isMyThingsMessageDetail, MyThingsMessage, MyThingsMessageDetail} from "./mythings_message";
+
+export interface RainFallPrediction extends MyThingsMessage {
     readonly values: [RainFallPredictionDetail];
 }
 
-export interface RainFallPredictionDetail {
+export function isRainFallPrediction(o: any): o is RainFallPrediction {
+    return isMyThingsMessage(o) &&
+        o.values.every(isRainFallPredictionDetail);
+}
+
+export interface RainFallPredictionDetail extends MyThingsMessageDetail {
     readonly area: string;
     readonly datetime: string;
     readonly time: string;
@@ -13,19 +17,8 @@ export interface RainFallPredictionDetail {
     readonly rainfall: string;
 }
 
-export function isRainFallPrediction(o: any): o is RainFallPrediction {
-    return o !== undefined &&
-        o.hasOwnProperty("user_id") &&
-        o.hasOwnProperty("service_id") &&
-        o.hasOwnProperty("mythings_id") &&
-        o.hasOwnProperty("values") &&
-        Array.isArray(o.values) &&
-        o.values.length >= 1 &&
-        o.values.every(isRainFallPredictionDetail);
-}
-
-function isRainFallPredictionDetail(o: any): o is RainFallPredictionDetail {
-    return o !== undefined &&
+export function isRainFallPredictionDetail(o: any): o is RainFallPredictionDetail {
+    return isMyThingsMessageDetail(o) &&
         o.hasOwnProperty("area") &&
         o.hasOwnProperty("datetime") &&
         o.hasOwnProperty("time") &&

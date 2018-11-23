@@ -7,7 +7,9 @@ const express = require("express");
 const fs = require("fs");
 const http = require("http");
 const sprintf_js_1 = require("sprintf-js");
+const mythings_message_1 = require("./model/mythings/mythings_message");
 const rainfall_prediction_1 = require("./model/mythings/rainfall_prediction");
+const earthquake_information_1 = require("./model/mythings/earthquake_information");
 class Server {
     constructor(config) {
         this.language = "ja";
@@ -20,20 +22,20 @@ class Server {
             console.log(req.headers);
             console.log(req.body);
             const text = req.body;
-            if (text !== undefined && rainfall_prediction_1.isRainFallPrediction(text) &&
+            if (text !== undefined && mythings_message_1.isMyThingsMessage(text) &&
                 req.headers.hasOwnProperty("x-secret") && req.headers["x-secret"] === config.mythings_secret) {
                 try {
-                    const detail = text.values[0];
-                    const speak = sprintf_js_1.sprintf("雨がふる予報が出ています。%sに、%sに、1時間あたり、%sミリの雨がふるでしょう。", detail.area, detail.time, detail.rainfall);
+                    const message = Server.getMyThingsMessageString(text);
+                    console.info("Speak: " + message);
                     ghn.ip(config.google_home_ip, this.language);
-                    ghn.notify(speak, (notifyRes) => {
+                    ghn.notify(text, (notifyRes) => {
                         console.info(notifyRes);
                         res.sendStatus(204);
                     });
                 }
                 catch (err) {
                     console.error(err);
-                    res.sendStatus(500);
+                    res.sendStatus(400);
                 }
             }
             else {
@@ -92,6 +94,17 @@ HTTP Server started.
 `, tcp_hostname, config.tcp_port).yellow;
         }
         console.info(listen_info);
+    }
+    static getMyThingsMessageString(o) {
+        if (rainfall_prediction_1.isRainFallPrediction(o)) {
+            const detail = o.values[0];
+            return sprintf_js_1.sprintf("雨がふる予報が出ています。%sに、%sに、1時間あたり、%sミリ、の雨がふるでしょう。", detail.area, detail.time, detail.rainfall);
+        }
+        if (earthquake_information_1.isEarthQuakeInformation(o)) {
+            const information = o.values[0];
+            return sprintf_js_1.sprintf("地震の情報です。%s %s 発生、%s、を震源とする、最大震度、%s、の地震がありました。%sの震度は、%s、です。", information.occurrence_date, information.occurrence_time, information.occurrence_name, information.max_intensity, information.place_name, information.intensity);
+        }
+        throw Error("Unknown MyThings Message Type");
     }
     stop() {
         let any_close = false;
