@@ -6,9 +6,9 @@ import * as fs from "fs";
 import * as http from "http";
 import {sprintf} from "sprintf-js";
 import {Config} from "./model/config";
-import {isMyThingsMessage, MyThingsMessage} from "./model/mythings/mythings_message";
-import {isRainFallPrediction, RainFallPrediction} from "./model/mythings/rainfall_prediction";
-import {EarthQuakeInformation, isEarthQuakeInformation} from "./model/mythings/earthquake_information";
+import {isMyThingsMessageProps, MyThingsMessage} from "./model/mythings/mythings_message";
+import {isRainFallPredictionProps, RainFallPrediction} from "./model/mythings/rainfall_prediction";
+import {EarthQuakeInformation, isEarthQuakeInformationProps} from "./model/mythings/earthquake_information";
 
 export class Server {
     private readonly language = "ja";
@@ -22,26 +22,33 @@ export class Server {
 
         this.app.post("/mythings", json_parser, (req: any, res: any) => {
             if (!req.body) {
-                return res.sendStatus(400);
+                res.sendStatus(400);
+                return;
             }
 
             console.log(req.headers);
             console.log(req.body);
 
             const text = req.body;
-            if (text !== undefined && isMyThingsMessage(text) &&
+            if (text !== undefined && isMyThingsMessageProps(text) &&
                 req.headers.hasOwnProperty("x-secret") && req.headers["x-secret"] === config.mythings_secret) {
-                try {
-                    const message = Server.getMyThingsMessageString(text);
-                    console.info("Speak: " + message);
+                let message: MyThingsMessage | void = undefined;
+                if (isRainFallPredictionProps(text)) {
+                    message = new RainFallPrediction(text);
+                } else if (isEarthQuakeInformationProps(text)) {
+                    message = new EarthQuakeInformation(text);
+                }
+
+                if (message !== undefined) {
+                    console.info(`Speak: ${message.toString()}`);
 
                     ghn.ip(config.google_home_ip, this.language);
-                    ghn.notify(text, (notifyRes: any) => {
+                    ghn.notify(message.toString(), (notifyRes: any) => {
                         console.info(notifyRes);
                         res.sendStatus(204);
                     });
-                } catch (err) {
-                    console.error(err);
+                } else {
+                    console.error("Unknown MyThings Message Type");
                     res.sendStatus(400);
                 }
             } else {
@@ -109,25 +116,6 @@ HTTP Server started.
             ).yellow;
         }
         console.info(listen_info);
-    }
-
-    static getMyThingsMessageString(o: MyThingsMessage): string {
-        if (isRainFallPrediction(o)) {
-            const detail = (o as RainFallPrediction).values[0];
-            return sprintf(
-                "雨がふる予報が出ています。%sに、%sに、1時間あたり、%sミリ、の雨がふるでしょう。",
-                detail.area, detail.time, detail.rainfall
-            );
-        }
-        if (isEarthQuakeInformation(o)) {
-            const information = (o as EarthQuakeInformation).values[0];
-            return sprintf(
-                "地震の情報です。%s %s 発生、%s、を震源とする、最大震度、%s、の地震がありました。%sの震度は、%s、です。",
-                information.occurrence_date, information.occurrence_time, information.occurrence_name,
-                information.max_intensity, information.place_name, information.intensity
-            );
-        }
-        throw Error("Unknown MyThings Message Type");
     }
 
     stop() {

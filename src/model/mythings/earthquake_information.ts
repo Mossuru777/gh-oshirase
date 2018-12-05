@@ -1,31 +1,46 @@
-import {isMyThingsMessage, isMyThingsMessageDetail, MyThingsMessage, MyThingsMessageDetail} from "./mythings_message";
+import {isMyThingsMessageProps, MyThingsMessage, MyThingsMessageProps} from "./mythings_message";
+import {sprintf} from "sprintf-js";
 
-export interface EarthQuakeInformation extends MyThingsMessage {
-    readonly values: [EarthQuakeInformationDetail];
+export interface EarthQuakeInformationProps extends MyThingsMessageProps {
+    readonly values: [EarthQuakeInformationDetailProps];
 }
 
-export function isEarthQuakeInformation(o: any): o is EarthQuakeInformation {
-    return isMyThingsMessage(o) &&
-        o.values.every(isEarthQuakeInformationDetail);
+export function isEarthQuakeInformationProps(o: any): o is EarthQuakeInformationProps {
+    return isMyThingsMessageProps(o) && o.values.every(isEarthQuakeInformationDetailProps);
 }
 
-export interface EarthQuakeInformationDetail extends MyThingsMessageDetail {
-    readonly occurrence_name: string;
-    readonly occurrence_date: string;
-    readonly occurrence_time: string;
+export interface EarthQuakeInformationDetailProps {
+    readonly place_name: string;
     readonly intensity: string;
     readonly max_intensity: string;
-    readonly place_name: string;
+    readonly occurrence_date: string;
+    readonly occurrence_time: string;
     readonly url: string;
 }
 
-export function isEarthQuakeInformationDetail(o: any): o is EarthQuakeInformationDetail {
-    return isMyThingsMessageDetail(o) &&
-        o.hasOwnProperty("occurrence_name") &&
-        o.hasOwnProperty("occurrence_date") &&
-        o.hasOwnProperty("occurrence_time") &&
+function isEarthQuakeInformationDetailProps(o: any): o is EarthQuakeInformationDetailProps {
+    return o.hasOwnProperty("place_name") &&
         o.hasOwnProperty("intensity") &&
         o.hasOwnProperty("max_intensity") &&
-        o.hasOwnProperty("place_name") &&
+        o.hasOwnProperty("occurrence_date") &&
+        o.hasOwnProperty("occurrence_time") &&
         o.hasOwnProperty("url");
+}
+
+export class EarthQuakeInformation extends MyThingsMessage implements EarthQuakeInformationProps {
+    readonly values: [EarthQuakeInformationDetailProps];
+
+    constructor(props: EarthQuakeInformationProps) {
+        super(props);
+        this.values = props.values;
+    }
+
+    toString(): string {
+        const information = this.values[0];
+        return sprintf(
+            "地震の情報です。%s %s 発生、最大震度、%s、の地震がありました。%sの震度は、%s、です。",
+            information.occurrence_date, information.occurrence_time,
+            information.max_intensity, information.place_name, information.intensity
+        );
+    }
 }

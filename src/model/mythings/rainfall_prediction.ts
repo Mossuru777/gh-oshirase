@@ -1,15 +1,15 @@
-import {isMyThingsMessage, isMyThingsMessageDetail, MyThingsMessage, MyThingsMessageDetail} from "./mythings_message";
+import {isMyThingsMessageProps, MyThingsMessage, MyThingsMessageProps} from "./mythings_message";
+import {sprintf} from "sprintf-js";
 
-export interface RainFallPrediction extends MyThingsMessage {
-    readonly values: [RainFallPredictionDetail];
+export interface RainFallPredictionProps extends MyThingsMessageProps {
+    readonly values: [RainFallPredictionDetailProps];
 }
 
-export function isRainFallPrediction(o: any): o is RainFallPrediction {
-    return isMyThingsMessage(o) &&
-        o.values.every(isRainFallPredictionDetail);
+export function isRainFallPredictionProps(o: any): o is RainFallPredictionProps {
+    return isMyThingsMessageProps(o) && o.values.every(isRainFallPredictionDetailProps);
 }
 
-export interface RainFallPredictionDetail extends MyThingsMessageDetail {
+export interface RainFallPredictionDetailProps {
     readonly area: string;
     readonly datetime: string;
     readonly time: string;
@@ -17,11 +17,27 @@ export interface RainFallPredictionDetail extends MyThingsMessageDetail {
     readonly rainfall: string;
 }
 
-export function isRainFallPredictionDetail(o: any): o is RainFallPredictionDetail {
-    return isMyThingsMessageDetail(o) &&
-        o.hasOwnProperty("area") &&
-        o.hasOwnProperty("datetime") &&
-        o.hasOwnProperty("time") &&
-        o.hasOwnProperty("date") &&
-        o.hasOwnProperty("rainfall");
+function isRainFallPredictionDetailProps(o: any): o is RainFallPredictionDetailProps {
+    return o.hasOwnProperty("area")
+        && o.hasOwnProperty("datetime")
+        && o.hasOwnProperty("time")
+        && o.hasOwnProperty("date")
+        && o.hasOwnProperty("rainfall");
+}
+
+export class RainFallPrediction extends MyThingsMessage implements RainFallPredictionProps {
+    readonly values: [RainFallPredictionDetailProps];
+
+    constructor(props: RainFallPredictionProps) {
+        super(props);
+        this.values = props.values;
+    }
+
+    toString(): string {
+        const detail = this.values[0];
+        return sprintf(
+            "雨がふる予報が出ています。%sに、%sに、1時間あたり、%sミリ、の雨がふるでしょう。",
+            detail.area, detail.time, detail.rainfall
+        );
+    }
 }

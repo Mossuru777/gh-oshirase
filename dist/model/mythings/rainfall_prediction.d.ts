@@ -1,13 +1,17 @@
-import { MyThingsMessage, MyThingsMessageDetail } from "./mythings_message";
-export interface RainFallPrediction extends MyThingsMessage {
-    readonly values: [RainFallPredictionDetail];
+import { MyThingsMessage, MyThingsMessageProps } from "./mythings_message";
+export interface RainFallPredictionProps extends MyThingsMessageProps {
+    readonly values: [RainFallPredictionDetailProps];
 }
-export declare function isRainFallPrediction(o: any): o is RainFallPrediction;
-export interface RainFallPredictionDetail extends MyThingsMessageDetail {
+export declare function isRainFallPredictionProps(o: any): o is RainFallPredictionProps;
+export interface RainFallPredictionDetailProps {
     readonly area: string;
     readonly datetime: string;
     readonly time: string;
     readonly date: string;
     readonly rainfall: string;
 }
-export declare function isRainFallPredictionDetail(o: any): o is RainFallPredictionDetail;
+export declare class RainFallPrediction extends MyThingsMessage implements RainFallPredictionProps {
+    readonly values: [RainFallPredictionDetailProps];
+    constructor(props: RainFallPredictionProps);
+    toString(): string;
+}

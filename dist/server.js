@@ -17,24 +17,31 @@ class Server {
         const json_parser = body_parser.json();
         this.app.post("/mythings", json_parser, (req, res) => {
             if (!req.body) {
-                return res.sendStatus(400);
+                res.sendStatus(400);
+                return;
             }
             console.log(req.headers);
             console.log(req.body);
             const text = req.body;
-            if (text !== undefined && mythings_message_1.isMyThingsMessage(text) &&
+            if (text !== undefined && mythings_message_1.isMyThingsMessageProps(text) &&
                 req.headers.hasOwnProperty("x-secret") && req.headers["x-secret"] === config.mythings_secret) {
-                try {
-                    const message = Server.getMyThingsMessageString(text);
-                    console.info("Speak: " + message);
+                let message = undefined;
+                if (rainfall_prediction_1.isRainFallPredictionProps(text)) {
+                    message = new rainfall_prediction_1.RainFallPrediction(text);
+                }
+                else if (earthquake_information_1.isEarthQuakeInformationProps(text)) {
+                    message = new earthquake_information_1.EarthQuakeInformation(text);
+                }
+                if (message !== undefined) {
+                    console.info(`Speak: ${message.toString()}`);
                     ghn.ip(config.google_home_ip, this.language);
-                    ghn.notify(text, (notifyRes) => {
+                    ghn.notify(message.toString(), (notifyRes) => {
                         console.info(notifyRes);
                         res.sendStatus(204);
                     });
                 }
-                catch (err) {
-                    console.error(err);
+                else {
+                    console.error("Unknown MyThings Message Type");
                     res.sendStatus(400);
                 }
             }
@@ -94,17 +101,6 @@ HTTP Server started.
 `, tcp_hostname, config.tcp_port).yellow;
         }
         console.info(listen_info);
-    }
-    static getMyThingsMessageString(o) {
-        if (rainfall_prediction_1.isRainFallPrediction(o)) {
-            const detail = o.values[0];
-            return sprintf_js_1.sprintf("雨がふる予報が出ています。%sに、%sに、1時間あたり、%sミリ、の雨がふるでしょう。", detail.area, detail.time, detail.rainfall);
-        }
-        if (earthquake_information_1.isEarthQuakeInformation(o)) {
-            const information = o.values[0];
-            return sprintf_js_1.sprintf("地震の情報です。%s %s 発生、%s、を震源とする、最大震度、%s、の地震がありました。%sの震度は、%s、です。", information.occurrence_date, information.occurrence_time, information.occurrence_name, information.max_intensity, information.place_name, information.intensity);
-        }
-        throw Error("Unknown MyThings Message Type");
     }
     stop() {
         let any_close = false;

@@ -1,15 +1,18 @@
-import { MyThingsMessage, MyThingsMessageDetail } from "./mythings_message";
-export interface EarthQuakeInformation extends MyThingsMessage {
-    readonly values: [EarthQuakeInformationDetail];
+import { MyThingsMessage, MyThingsMessageProps } from "./mythings_message";
+export interface EarthQuakeInformationProps extends MyThingsMessageProps {
+    readonly values: [EarthQuakeInformationDetailProps];
 }
-export declare function isEarthQuakeInformation(o: any): o is EarthQuakeInformation;
-export interface EarthQuakeInformationDetail extends MyThingsMessageDetail {
-    readonly occurrence_name: string;
-    readonly occurrence_date: string;
-    readonly occurrence_time: string;
+export declare function isEarthQuakeInformationProps(o: any): o is EarthQuakeInformationProps;
+export interface EarthQuakeInformationDetailProps {
+    readonly place_name: string;
     readonly intensity: string;
     readonly max_intensity: string;
-    readonly place_name: string;
+    readonly occurrence_date: string;
+    readonly occurrence_time: string;
     readonly url: string;
 }
-export declare function isEarthQuakeInformationDetail(o: any): o is EarthQuakeInformationDetail;
+export declare class EarthQuakeInformation extends MyThingsMessage implements EarthQuakeInformationProps {
+    readonly values: [EarthQuakeInformationDetailProps];
+    constructor(props: EarthQuakeInformationProps);
+    toString(): string;
+}
