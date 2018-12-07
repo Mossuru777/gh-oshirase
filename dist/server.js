@@ -14,6 +14,7 @@ class Server {
     constructor(config) {
         this.language = "ja";
         this.app = express();
+        ghn.device(config.google_home_name, this.language);
         const json_parser = body_parser.json();
         this.app.post("/mythings", json_parser, (req, res) => {
             if (!req.body) {
@@ -23,27 +24,37 @@ class Server {
             console.log(req.headers);
             console.log(req.body);
             const text = req.body;
-            if (text !== undefined && mythings_message_1.isMyThingsMessageProps(text) &&
-                req.headers.hasOwnProperty("x-secret") && req.headers["x-secret"] === config.mythings_secret) {
-                let message = undefined;
+            if (text !== undefined && mythings_message_1.isMyThingsMessageProps(text)
+                && req.headers.hasOwnProperty("x-secret") && req.headers["x-secret"] === config.mythings_secret) {
+                let message;
                 if (rainfall_prediction_1.isRainFallPredictionProps(text)) {
                     message = new rainfall_prediction_1.RainFallPrediction(text);
                 }
                 else if (earthquake_information_1.isEarthQuakeInformationProps(text)) {
                     message = new earthquake_information_1.EarthQuakeInformation(text);
                 }
-                if (message !== undefined) {
-                    console.info(`Speak: ${message.toString()}`);
-                    ghn.ip(config.google_home_ip, this.language);
-                    ghn.notify(message.toString(), (notifyRes) => {
-                        console.info(notifyRes);
-                        res.sendStatus(204);
-                    });
-                }
                 else {
                     console.error("Unknown MyThings Message Type");
                     res.sendStatus(400);
+                    return;
                 }
+                console.info(`Speak: ${message.toString()}`);
+                const speak = (try_retrying) => {
+                    ghn.notify(message.toString(), (notifyRes) => {
+                        if (notifyRes !== "error") {
+                            console.info(notifyRes);
+                            res.sendStatus(204);
+                        }
+                        else if (try_retrying) {
+                            speak(false);
+                        }
+                        else {
+                            console.error(notifyRes);
+                            res.sendStatus(503);
+                        }
+                    });
+                };
+                speak(!ghn.deviceAddress);
             }
             else {
                 res.sendStatus(403);

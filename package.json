@@ -44,7 +44,7 @@
   "scripts": {
     "preinstall": "node installer_files/dist/preinstall.js",
     "install": "node installer_files/dist/install.js",
-    "postinstall": "node installer_files/dist/postinstall.js",
+    "postinstall": "sed -i -e 's/getaddrinfo()/getaddrinfo({families\\:\\[4\\]\\})/g' node_modules/mdns/lib/browser.js && node installer_files/dist/postinstall.js",
     "preuninstall": "node installer_files/dist/preuninstall.js",
     "build:main": "tsc",
     "clean:main": "del-cli dist",

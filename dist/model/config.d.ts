@@ -1,5 +1,5 @@
 export interface Config {
-    readonly google_home_ip: string;
+    readonly google_home_name: string;
     readonly socket_path: string | null;
     readonly tcp_port: number | null;
     readonly tcp_hostname: string | null;

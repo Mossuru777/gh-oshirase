@@ -9,7 +9,7 @@ interface FileCopyInfo {
 }
 
 const CopyTemplateFiles: { [key: string]: FileCopyInfo } = {
-    config: {template_path: "template/config.yml", dest_dir: "/usr/local/etc/gh-oshirase"}
+    config: { template_path: "template/config.yml", dest_dir: "/usr/local/etc/gh-oshirase" }
 };
 
 // copy template files
@@ -57,7 +57,7 @@ function copyFileSyncIfNotExists(info: FileCopyInfo) {
     }
 
     try {
-        fs.writeFileSync(dest_path, fs.readFileSync(info.template_path), {mode: 0o644, flag: "wx"});
+        fs.writeFileSync(dest_path, fs.readFileSync(info.template_path), { mode: 0o644, flag: "wx" });
     } catch (err) {
         if (err.code !== "EEXIST") {
             throw err;
