@@ -6,7 +6,7 @@
   "bin": {
     "gh-oshirase": "bin/gh-oshirase.sh"
   },
-  "license": "ISC",
+  "license": "MIT",
   "os": [
     "linux"
   ],
