@@ -6,7 +6,7 @@ try {
     child_process.execSync("pm2 -v", { encoding: "utf8" });
 }
 catch (_a) {
-    console.error("Please install pm2 as global like `sudo npm install -g pm2@2`.".bgRed.white);
+    console.error("Please install pm2 as global like `sudo npm install -g pm2`.".bgRed.white);
     process.exit(1);
 }
 const pm2Version = child_process.execSync("pm2 -v", { encoding: "utf8" }).trim();
@@ -18,4 +18,3 @@ else {
     console.error("PM2 Version:", `${pm2Version}`.red, "[NG]".bgRed, "Expected:", pm2Expected);
     process.exit(1);
 }
-//# sourceMappingURL=install.js.map

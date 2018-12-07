@@ -37,4 +37,3 @@ process.on("SIGTERM", () => {
     server.stop();
     process.exit(128 + os.constants.signals.SIGTERM);
 });
-//# sourceMappingURL=index.js.map

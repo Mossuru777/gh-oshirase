@@ -9,4 +9,3 @@ function isConfig(o) {
         o.hasOwnProperty("mythings_secret");
 }
 exports.isConfig = isConfig;
-//# sourceMappingURL=config.js.map

@@ -22,4 +22,3 @@ class ConfigStore {
     }
 }
 exports.ConfigStore = ConfigStore;
-//# sourceMappingURL=config_store.js.map

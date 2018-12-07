@@ -13,4 +13,3 @@ class MyThingsMessage {
     }
 }
 exports.MyThingsMessage = MyThingsMessage;
-//# sourceMappingURL=mythings_message.js.map

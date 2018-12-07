@@ -54,4 +54,3 @@ function copyFileSyncIfNotExists(info) {
         }
     }
 }
-//# sourceMappingURL=postinstall.js.map

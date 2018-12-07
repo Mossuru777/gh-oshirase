@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as yaml from "js-yaml";
-import {Config, isConfig} from "../model/config";
+import { Config, isConfig } from "../model/config";
 
 export class ConfigStore {
     private static _instance: ConfigStore;

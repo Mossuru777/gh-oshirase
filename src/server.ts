@@ -4,11 +4,11 @@ import "colors";
 import * as express from "express";
 import * as fs from "fs";
 import * as http from "http";
-import {sprintf} from "sprintf-js";
-import {Config} from "./model/config";
-import {isMyThingsMessageProps, MyThingsMessage} from "./model/mythings/mythings_message";
-import {isRainFallPredictionProps, RainFallPrediction} from "./model/mythings/rainfall_prediction";
-import {EarthQuakeInformation, isEarthQuakeInformationProps} from "./model/mythings/earthquake_information";
+import { sprintf } from "sprintf-js";
+import { Config } from "./model/config";
+import { isMyThingsMessageProps, MyThingsMessage } from "./model/mythings/mythings_message";
+import { isRainFallPredictionProps, RainFallPrediction } from "./model/mythings/rainfall_prediction";
+import { EarthQuakeInformation, isEarthQuakeInformationProps } from "./model/mythings/earthquake_information";
 
 export class Server {
     private readonly language = "ja";

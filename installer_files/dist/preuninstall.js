@@ -15,4 +15,3 @@ child_process.execSync("pm2 delete pm2_process.json", {
         process.stderr
     ]
 });
-//# sourceMappingURL=preuninstall.js.map

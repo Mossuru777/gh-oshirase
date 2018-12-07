@@ -24,4 +24,3 @@ class RainFallPrediction extends mythings_message_1.MyThingsMessage {
     }
 }
 exports.RainFallPrediction = RainFallPrediction;
-//# sourceMappingURL=rainfall_prediction.js.map

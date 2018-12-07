@@ -25,4 +25,3 @@ class EarthQuakeInformation extends mythings_message_1.MyThingsMessage {
     }
 }
 exports.EarthQuakeInformation = EarthQuakeInformation;
-//# sourceMappingURL=earthquake_information.js.map

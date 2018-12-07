@@ -7,7 +7,7 @@
     /* Generates corresponding '.d.ts' file. */
     "preserveConstEnums": true,
     /* Do not erase const enum declarations in generated code. */
-    "sourceMap": true,
+    "sourceMap": false,
     /* Generates corresponding '.map' file. */
     "removeComments": true,
     /* Do not emit comments to output. */

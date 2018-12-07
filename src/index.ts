@@ -1,7 +1,7 @@
 import "colors";
 import * as os from "os";
-import {Server} from "./server";
-import {ConfigStore} from "./store/config_store";
+import { Server } from "./server";
+import { ConfigStore } from "./store/config_store";
 
 if (process === undefined || require === undefined) {
     console.error("Node.js environment required.".bgRed.white);

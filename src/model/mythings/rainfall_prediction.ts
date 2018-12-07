@@ -1,5 +1,5 @@
-import {isMyThingsMessageProps, MyThingsMessage, MyThingsMessageProps} from "./mythings_message";
-import {sprintf} from "sprintf-js";
+import { isMyThingsMessageProps, MyThingsMessage, MyThingsMessageProps } from "./mythings_message";
+import { sprintf } from "sprintf-js";
 
 export interface RainFallPredictionProps extends MyThingsMessageProps {
     readonly values: [RainFallPredictionDetailProps];
