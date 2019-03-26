@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process = require("child_process");
+require("colors");
 const semver = require("semver");
 try {
     child_process.execSync("pm2 -v", { encoding: "utf8" });
