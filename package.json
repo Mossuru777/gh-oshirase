@@ -19,7 +19,7 @@
     "colors": "^1.3.3",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
-    "google-home-notifier": "github:mottox2/google-home-notifier",
+    "google-home-notifier": "github:nagao-bps/google-home-notifier",
     "js-yaml": "^3.13.1",
     "ps-node": "^0.1.6",
     "semver": "^6.2.0",
@@ -44,7 +44,7 @@
   "scripts": {
     "preinstall": "node installer_files/dist/preinstall.js",
     "install": "node installer_files/dist/install.js",
-    "postinstall": "sed -i -e 's/getaddrinfo()/getaddrinfo({families\\:\\[4\\]\\})/g' node_modules/mdns/lib/browser.js && node installer_files/dist/postinstall.js",
+    "postinstall": "node installer_files/dist/postinstall.js",
     "preuninstall": "node installer_files/dist/preuninstall.js",
     "build:main": "tsc",
     "clean:main": "del-cli dist",
@@ -52,7 +52,7 @@
     "build:installer_files": "tsc --project installer_files",
     "clean:installer_files": "del-cli installer_files/dist",
     "lint:installer_files": "tslint --fix --format stylish --project installer_files",
-    "prepare": "npm-run-all -s clean:* lint:* build:*",
+    "prepare": "npm-run-all -s clean:* lint:* build:* && git reset --quiet src dist installer_files && git add -A src dist installer_files",
     "dev-start": "npm-run-all -s clean:main lint:main build:main && node dist/index.js"
   },
   "husky": {
