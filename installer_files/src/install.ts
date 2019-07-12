@@ -1,4 +1,5 @@
 import * as child_process from "child_process";
+import "colors";
 import * as semver from "semver";
 
 // pm2 test flight
